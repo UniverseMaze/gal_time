@@ -195,6 +195,8 @@ gal_time/
 ├── 界面预览-列表视图.png
 ├── 界面预览-游戏详情.png
 ├── 界面预览-统计排行.png
+├── LICENSE                     # MIT
+├── THIRD-PARTY-NOTICES.md      # 第三方组件与素材审计
 ├── .gitattributes
 └── .gitignore
 ```
@@ -207,6 +209,24 @@ gal_time/
 - Markdown 解析器、环状图（`conic-gradient`）、柱状图都是手写实现，没有引入任何库
 - 存储为 `localStorage`，键名 `gametime.v1`，数据结构 version 3
 - **换行符**：`.gitattributes` 设置了 `* -text`，禁止 Git 做任何换行转换。启动器 `.vbs` / `.bat` 必须是 CRLF，一旦被转成 LF，Windows 脚本宿主会在续行处报 `800A0400` 直接启动失败——所以请不要去掉这条规则
+
+---
+
+## 许可证
+
+本项目采用 **MIT 许可**，全文见 [LICENSE](LICENSE)。
+
+```
+Copyright (c) 2026 UniverseMaze
+```
+
+**仓库内不含任何第三方源代码、字体或图标素材。** 主程序 `index.html` 零依赖：Markdown 解析器、
+环状图与柱状图、全部图标均为手写实现，字体使用系统字体栈，没有任何 `<script src>`、CDN 或
+Web Font 引用。`tools/` 下的脚本通过 pip 使用 Playwright（Apache-2.0），属于运行时依赖，
+不随本仓库分发，因此本仓库只受自身 MIT 许可约束，没有额外的开源义务。
+
+引入第三方库前请先读 [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md)——里面记录了逐项审计结果
+（含 Bangumi 数据的归属说明）与新增依赖时的处理流程。
 
 ---
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 UniverseMaze
 """
 从 Bangumi 抓取指定用户「玩过」的游戏条目信息，供 GameTime 匹配用。
 

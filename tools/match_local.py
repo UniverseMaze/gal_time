@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2026 UniverseMaze
 """
 把 bgm_crawl.py 抓到的条目信息，按名称匹配进 GameTime 本地存档。
 

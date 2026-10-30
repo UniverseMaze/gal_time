@@ -15,3 +15,7 @@ desktop.ini
 
 # 本地同步结果截图（含个人游戏列表，不入库）
 同步截图/
+
+# Python
+__pycache__/
+*.pyc
