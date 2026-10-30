@@ -148,17 +148,49 @@ GameTime\profile\Default\Local Storage\
 
 ---
 
+## 从 Bangumi 同步作品信息
+
+游戏详情页的「发行 / 剧本 / 原画 / 背景 / 别名 / 平台 / 游戏类型 / 游戏引擎 / 游玩人数 / 发行日期 / 售价 / 开发 + 游戏简介」，可以按 Bangumi 收藏一键填充，不用手工敲。
+
+```bash
+# 1. 抓取某用户「玩过 / 在玩」的条目（含 infobox 与简介）
+python tools/bgm_login_crawl.py --uid 756388 --types 2,3 --out .tmp/bgm_raw_full.json
+
+# 2. 按名称匹配到本地存档，生成合并后的 JSON
+python tools/match_local.py --bgm .tmp/bgm_raw_full.json --local .tmp/local_db.json \
+    --map tools/manual_map.json --out .tmp/gametime_merged.json
+```
+
+三个细节值得记一下，都是踩过的坑：
+
+- **必须登录**。Bangumi 对未登录访客屏蔽了大量 R18 条目（兰斯系列、末世孤雄、BLACKSOULS 等），条目 API 与网页都返回「数据库中没有查询您所指定的条目」。脚本会打开一个独立 profile 的 Edge 窗口等你登录，检测到登录后自动继续，账号设置里需要开启「显示敏感内容」。
+- **登录检测不能用 `/v0/me`**。该接口只认 OAuth Token，用网页 Cookie 访问恒为 401。脚本改为请求一个被屏蔽的条目，看返回页面里有没有 `id="infobox"`——有就是登录了。
+- **API 404 时走网页兜底**。对被屏蔽条目 API 仍返 404，脚本会直接打开 `bgm.tv/subject/{id}` 解析 `#infobox`，抓到的数据标记 `source: html`。
+
+匹配策略从强到弱：手工映射 → 归一化精确命中 → 去括号命中 → 互包含 → 相似度，低于阈值只列在「待确认」里不动数据。`tools/manual_map.json` 存的是名称对不上时的人工映射（兰斯 1/2/3/6/7 → ランス01/02/03/RanceVI/戦国ランス 这类）。
+
+标签不是直接搬 Bangumi 标签，而是「统一品类（视觉小说 / RPG / 音乐 / 动作 / 策略模拟）+ 全库出现两次以上的主题标签」，避免人名与一次性玩梗标签污染搜索。
+
+> 写入前请先**完全关闭计时器**（它会独占 profile），并备份 `GameTime/profile/Default/Local Storage`。脚本只填 `info` 与 `tags`，计时、评分、评论、分段记录一个字节都不改。
+
+---
+
 ## 项目结构
 
 ```
 gal_time/
 ├── GameTime/
-│   ├── index.html              # 全部界面与逻辑（单文件，约 3000 行）
+│   ├── index.html              # 全部界面与逻辑（单文件，约 3600 行）
 │   ├── 启动游戏计时器.vbs       # 主启动器
 │   ├── 启动游戏计时器（备用）.bat
 │   ├── app.ico                 # 图标
 │   ├── 使用说明.txt             # 面向使用的详细说明
 │   └── profile/                # 本地数据（已 gitignore）
+├── tools/
+│   ├── bgm_crawl.py            # 未登录也能跑的 Bangumi 抓取
+│   ├── bgm_login_crawl.py      # 带登录态抓取（被屏蔽条目靠它）
+│   ├── match_local.py          # 名称匹配 + 字段/标签映射
+│   └── manual_map.json         # 名称人工映射表
 ├── 界面预览.png
 ├── 界面预览-列表视图.png
 ├── 界面预览-游戏详情.png
