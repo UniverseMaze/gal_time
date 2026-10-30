@@ -484,16 +484,26 @@ textarea.md-input::placeholder{color:var(--dim);font-family:"Segoe UI","Microsof
 .info-head b{font-size:13px;font-weight:600}
 .info-head .info-sub{font-size:11px;color:var(--dim)}
 .info-head .sp{flex:1}
-.info-rows{display:flex;flex-direction:column}
+.info-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);margin-top:2px}
+.info-rows{display:flex;flex-direction:column;border-right:1px solid var(--line);padding-right:18px}
 .info-row{display:flex;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px;line-height:1.7}
 .info-row:first-child{border-top:0}
 .info-k{flex:0 0 82px;color:var(--dim);letter-spacing:.2px}
 .info-v{flex:1;min-width:0;color:var(--text);word-break:break-word;white-space:pre-wrap}
 .info-v.dim{color:var(--dim)}
 .plat{display:inline-flex;align-items:center;height:23px;padding:0 11px;margin:0 6px 3px 0;border:1px solid var(--line);border-radius:999px;font-size:11.5px;color:var(--muted);background:var(--panel-2)}
-.info-syn{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+/* 简介与左侧资料表并排：右上角对齐，内容长时在自身区域内滚动，卡片不会被撑得过高 */
+.info-syn{padding-left:18px;display:flex;flex-direction:column;min-height:0}
 .info-syn .k{font-size:11.5px;color:var(--dim);margin-bottom:6px}
-.info-syn .txt{font-size:12.5px;line-height:1.85;white-space:pre-wrap;color:var(--muted);word-break:break-word}
+.info-syn .txt{font-size:12.5px;line-height:1.85;white-space:pre-wrap;color:var(--muted);word-break:break-word;
+  max-height:520px;overflow:auto;padding-right:6px;padding-bottom:16px;overscroll-behavior:contain}
+/* 内容超出时底部渐隐，提示还能往下滚，避免最后一行被切成半截像出错 */
+.info-syn .txt.fade{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent);
+  mask-image:linear-gradient(to bottom,#000 calc(100% - 30px),transparent)}
+.info-syn .txt.fade.at-end{-webkit-mask-image:none;mask-image:none}
+.info-syn .txt::-webkit-scrollbar{width:8px}
+.info-syn .txt::-webkit-scrollbar-thumb{background:var(--track);border-radius:8px}
+.info-syn .txt::-webkit-scrollbar-thumb:hover{background:rgba(91,124,250,.45)}
 
 /* 标签：可删（编辑态）与只读两种样式 */
 .tagbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:12px;margin-top:12px;border-top:1px solid var(--line)}
@@ -742,6 +752,13 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
   .grid-2{grid-template-columns:1fr}
   .stats-row{grid-template-columns:1fr}
   .rank-row .nm{width:96px}
+}
+@media (max-width:900px){
+  /* 窗口不够宽时，资料表与简介改回上下排 */
+  .info-body{grid-template-columns:1fr}
+  .info-rows{border-right:0;padding-right:0}
+  .info-syn{padding-left:0;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+  .info-syn .txt{max-height:none;overflow:visible;padding-right:0}
 }
 @media (max-width:760px){
   .stats-row{grid-template-columns:1fr}
@@ -2360,10 +2377,12 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       }).join('');
       var syn = info.synopsis || '';
       host.innerHTML = '<div class="card info-card">' + head +
-        '<div class="info-rows">' + rows + '</div>' +
-        '<div class="info-syn"><div class="k">游戏简介</div>' +
-          (syn ? '<div class="txt">' + esc(syn) + '</div>'
-               : '<div class="txt dim" style="color:var(--dim)">还没有写简介。点右上角「编辑信息」补上。</div>') +
+        '<div class="info-body">' +
+          '<div class="info-rows">' + rows + '</div>' +
+          '<div class="info-syn"><div class="k">游戏简介</div>' +
+            (syn ? '<div class="txt">' + esc(syn) + '</div>'
+                 : '<div class="txt" style="color:var(--dim)">还没有写简介。点右上角「编辑信息」补上。</div>') +
+          '</div>' +
         '</div>' +
         tagsBar +
       '</div>';
@@ -2372,6 +2391,17 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
   }
 
   function bindInfoBlock(g){
+    // 简介可滚动时，底部渐隐提示还有内容；滚到底就取消渐隐
+    var synTxt = $('#infoBlock .info-syn .txt');
+    if (synTxt) {
+      var syncFade = function(){
+        var over = synTxt.scrollHeight > synTxt.clientHeight + 4;
+        var atEnd = synTxt.scrollTop + synTxt.clientHeight >= synTxt.scrollHeight - 8;
+        synTxt.classList.toggle('fade', over && !atEnd);
+      };
+      synTxt.addEventListener('scroll', syncFade);
+      syncFade();
+    }
     var editBtn = $('#infoEdit');
     if (editBtn) editBtn.addEventListener('click', function(){
       infoEditing = true;
