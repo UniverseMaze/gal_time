@@ -446,6 +446,14 @@ textarea.md-input::placeholder{color:var(--dim);font-family:"Segoe UI","Microsof
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
   border-left:2px solid var(--line);padding-left:8px;
 }
+/* 卡片 / 列表上的标签，最多显示 3 个，其余收成 +N */
+.gc-tags,.gl-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
+.gc-tags .t,.gl-tags .t{
+  font-size:10px;padding:2px 8px;border-radius:999px;background:rgba(91,124,250,.14);
+  color:#9db1ff;max-width:104px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+:root[data-theme="light"] .gc-tags .t,:root[data-theme="light"] .gl-tags .t{background:rgba(91,124,250,.11);color:#3f5bd6}
+.gc-tags .t.more,.gl-tags .t.more{background:var(--track);color:var(--dim)}
 .rate-block{
   border:1px solid var(--line);border-radius:14px;padding:14px 16px 14px;margin:0 0 18px;
   background:linear-gradient(180deg,rgba(242,180,69,.07),rgba(242,180,69,0));
@@ -470,8 +478,67 @@ textarea.md-input::placeholder{color:var(--dim);font-family:"Segoe UI","Microsof
 .rate-row-foot{display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap}
 .rate-tip{font-size:11px;color:var(--dim)}
 
+/* ---------- 游戏信息卡（详情页） ---------- */
+.info-card{margin-top:16px}
+.info-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.info-head b{font-size:13px;font-weight:600}
+.info-head .info-sub{font-size:11px;color:var(--dim)}
+.info-head .sp{flex:1}
+.info-rows{display:flex;flex-direction:column}
+.info-row{display:flex;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px;line-height:1.7}
+.info-row:first-child{border-top:0}
+.info-k{flex:0 0 82px;color:var(--dim);letter-spacing:.2px}
+.info-v{flex:1;min-width:0;color:var(--text);word-break:break-word;white-space:pre-wrap}
+.info-v.dim{color:var(--dim)}
+.plat{display:inline-flex;align-items:center;height:23px;padding:0 11px;margin:0 6px 3px 0;border:1px solid var(--line);border-radius:999px;font-size:11.5px;color:var(--muted);background:var(--panel-2)}
+.info-syn{margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+.info-syn .k{font-size:11.5px;color:var(--dim);margin-bottom:6px}
+.info-syn .txt{font-size:12.5px;line-height:1.85;white-space:pre-wrap;color:var(--muted);word-break:break-word}
+
+/* 标签：可删（编辑态）与只读两种样式 */
+.tagbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;padding-top:12px;margin-top:12px;border-top:1px solid var(--line)}
+.tagbar .tagbar-k{font-size:11.5px;color:var(--dim);margin-right:2px}
+.gtag{display:inline-flex;align-items:center;gap:4px;height:24px;padding:0 4px 0 10px;border-radius:999px;
+  background:rgba(91,124,250,.14);color:#9db1ff;font-size:11.5px;letter-spacing:.2px;max-width:100%}
+:root[data-theme="light"] .gtag{background:rgba(91,124,250,.12);color:#3f5bd6}
+.gtag .tx{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gtag .x{width:16px;height:16px;flex:0 0 16px;border:0;border-radius:50%;background:rgba(255,255,255,.09);color:inherit;
+  font-size:13px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;padding:0;transition:background .12s,color .12s}
+.gtag .x:hover{background:rgba(226,100,122,.92);color:#fff}
+.gtag-ro{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--track);color:var(--muted);font-size:11.5px;max-width:100%}
+.gtag-ro .tx{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tag-input{height:26px;min-width:148px;flex:1;max-width:220px;padding:0 11px;border:1px dashed var(--line);border-radius:999px;
+  background:transparent;color:var(--text);font-size:11.5px;outline:none;transition:border-color .15s}
+.tag-input:focus{border-color:rgba(91,124,250,.6);border-style:solid}
+.tag-input::placeholder{color:var(--dim)}
+.tag-empty{font-size:11.5px;color:var(--dim)}
+
+/* 信息编辑表单 */
+.info-form{display:grid;grid-template-columns:1fr 1fr;gap:11px 14px;margin-top:6px}
+.info-form .full{grid-column:1/-1}
+.info-form .fl{font-size:11.5px;color:var(--dim);gap:5px;display:flex;flex-direction:column}
+.info-form .input{padding:7px 10px;font-size:12.5px}
+.info-form textarea.input{min-height:56px;line-height:1.6;resize:vertical}
+.info-foot{display:flex;align-items:center;gap:9px;margin-top:13px;flex-wrap:wrap}
+.info-foot .tiny{color:var(--dim);font-size:11px}
+
 /* ---------- stats ---------- */
 .stat-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:18px}
+/* 数据汇总卡：筛选条 + KPI 同在一张卡里，数字随筛选变化 */
+.stats-summary{padding-bottom:15px}
+.ss-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:11px}
+.ss-head h3{margin:0;font-size:13px}
+.ss-head .ss-note{font-size:11.5px;color:var(--dim);margin-left:auto;font-variant-numeric:tabular-nums}
+.ss-filters{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:15px;align-items:center}
+.ss-filters .input{height:32px;padding:0 10px;font-size:12px;border-radius:9px}
+.ss-filters #statSearch{flex:1 1 190px;min-width:170px;max-width:330px;width:auto}
+/* select 全局是 width:100%，在这里要按内容宽度，否则会把整行挤成竖排 */
+.ss-filters select.input{width:auto;flex:0 0 auto;min-width:96px;max-width:190px;padding-right:30px;
+  background-position:calc(100% - 16px) 51%,calc(100% - 11px) 51%}
+.ss-filters .ss-reset{height:32px;padding:0 12px;font-size:11.5px;border:1px solid var(--line);border-radius:9px;
+  background:transparent;color:var(--muted);cursor:pointer;transition:color .15s,border-color .15s}
+.ss-filters .ss-reset:hover{color:var(--text);border-color:rgba(91,124,250,.45)}
+.stats-summary .stat-grid{margin-bottom:0}
 .stat{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:16px 18px}
 .stat .k{font-size:11.5px;color:var(--dim);letter-spacing:.4px}
 .stat .v{font-size:22px;font-weight:600;margin-top:7px;font-variant-numeric:tabular-nums;letter-spacing:-.5px}
@@ -681,6 +748,11 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
   .donut{width:146px;height:146px;flex-basis:146px}
   .donut .hole{inset:28px}
   .donut-wrap{gap:14px}
+  /* 信息表单单列，键值行不再固定标签宽度 */
+  .info-form{grid-template-columns:1fr}
+  .info-row{flex-direction:column;gap:2px}
+  .info-k{flex:none}
+  .ss-filters #statSearch{max-width:none;flex:1 1 100%}
 }
 @media (max-width:760px){
   .sidebar{width:72px;flex:0 0 72px;padding:18px 8px}
@@ -801,20 +873,41 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
           <p class="sub">看看最近一周把时间花在了哪里。</p>
         </div>
       </div>
-      <div class="stat-grid">
-        <div class="stat"><div class="k">整体游戏时长</div><div class="v" id="stTotal">0 分钟</div></div>
-        <div class="stat"><div class="k">游戏数量</div><div class="v" id="stGames">0</div></div>
-        <div class="stat stat-status">
-          <div class="k">游戏状态</div>
-          <div class="srows">
-            <div class="srow"><i class="dot done"></i>已完成<b id="stDone">0</b></div>
-            <div class="srow"><i class="dot playing"></i>游戏中<b id="stPlaying">0</b></div>
-            <div class="srow"><i class="dot todo"></i>未开始<b id="stTodo">0</b></div>
-          </div>
+      <div class="card stats-summary">
+        <div class="ss-head">
+          <h3>数据汇总</h3>
+          <span class="ss-note" id="stScope">全部 0 款游戏</span>
         </div>
-        <div class="stat"><div class="k">平均评分</div><div class="v" id="stRate">—</div></div>
-        <div class="stat"><div class="k">今日时长</div><div class="v" id="stToday">0 分钟</div></div>
-        <div class="stat"><div class="k">最长单次</div><div class="v" id="stLongest">—</div></div>
+        <div class="ss-filters">
+          <input class="input" id="statSearch" placeholder="搜索游戏名 / 标签 / 评论 / 制作信息…" autocomplete="off">
+          <select class="input" id="statTag">
+            <option value="">全部标签</option>
+          </select>
+          <select class="input" id="rankFilter">
+            <option value="all">全部游戏</option>
+            <option value="done">只看已完成</option>
+            <option value="playing">只看游戏中</option>
+            <option value="todo">只看未开始</option>
+            <option value="high">8 分及以上</option>
+            <option value="unrated">只看未评分</option>
+          </select>
+          <button class="ss-reset" id="statReset">重置筛选</button>
+        </div>
+        <div class="stat-grid">
+          <div class="stat"><div class="k">整体游戏时长</div><div class="v" id="stTotal">0 分钟</div></div>
+          <div class="stat"><div class="k">游戏数量</div><div class="v" id="stGames">0</div></div>
+          <div class="stat stat-status">
+            <div class="k">游戏状态</div>
+            <div class="srows">
+              <div class="srow"><i class="dot done"></i>已完成<b id="stDone">0</b></div>
+              <div class="srow"><i class="dot playing"></i>游戏中<b id="stPlaying">0</b></div>
+              <div class="srow"><i class="dot todo"></i>未开始<b id="stTodo">0</b></div>
+            </div>
+          </div>
+          <div class="stat"><div class="k">平均评分</div><div class="v" id="stRate">—</div></div>
+          <div class="stat"><div class="k">今日时长</div><div class="v" id="stToday">0 分钟</div></div>
+          <div class="stat"><div class="k">最长单次</div><div class="v" id="stLongest">—</div></div>
+        </div>
       </div>
       <div class="stats-row">
         <div class="card">
@@ -835,14 +928,6 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
               <option value="rating">按分数</option>
               <option value="done">按完成日期</option>
               <option value="name">按名称</option>
-            </select>
-            <select class="input" id="rankFilter">
-              <option value="all">全部游戏</option>
-              <option value="done">只看已完成</option>
-              <option value="playing">只看游戏中</option>
-              <option value="todo">只看未开始</option>
-              <option value="high">8 分及以上</option>
-              <option value="unrated">只看未评分</option>
             </select>
             <select class="input" id="rankSize">
               <option value="5">每页 5 条</option>
@@ -1000,7 +1085,7 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       version:3, games:[], active:null,
       prefs:{
         theme:'dark', sort:'recent', rankSort:'total', rankFilter:'all',
-        layout:'card', rankSize:8, rankPage:1, mdView:'split'
+        layout:'card', rankSize:8, rankPage:1, mdView:'split', rankTag:''
       }
     };
   }
@@ -1011,6 +1096,55 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
     var d = new Date(s + 'T00:00:00');
     if (isNaN(d.getTime())) return '';
     return s;
+  }
+  /* 游戏信息卡的字段（顺序即展示顺序，和常见的 galgame 资料表一致）
+     platforms 是多值，单独存数组；其余都是单行或多行文本 */
+  var INFO_FIELDS = [
+    ['publisher', '发行'],
+    ['scenario',  '剧本'],
+    ['art',       '原画'],
+    ['background','背景'],
+    ['alias',     '别名'],
+    ['platforms', '平台'],
+    ['genre',     '游戏类型'],
+    ['engine',    '游戏引擎'],
+    ['players',   '游玩人数'],
+    ['release',   '发行日期'],
+    ['price',     '售价'],
+    ['developer', '开发']
+  ];
+  var INFO_KEYS = INFO_FIELDS.map(function(f){ return f[0]; }).filter(function(k){ return k !== 'platforms'; });
+  var INFO_LABEL = {};
+  INFO_FIELDS.forEach(function(f){ INFO_LABEL[f[0]] = f[1]; });
+
+  // 标签：去空、去重（忽略大小写）、限长限量
+  function normTags(v, maxLen, maxCount){
+    maxLen = maxLen || 20; maxCount = maxCount || 30;
+    var out = [], seen = {};
+    if (!Array.isArray(v)) return out;
+    v.forEach(function(t){
+      if (typeof t !== 'string') return;
+      var s = t.trim().replace(/\s+/g, ' ').slice(0, maxLen);
+      if (!s) return;
+      var key = s.toLowerCase();
+      if (seen[key]) return;
+      seen[key] = 1;
+      if (out.length < maxCount) out.push(s);
+    });
+    return out;
+  }
+  function normInfo(v){
+    var out = {};
+    INFO_KEYS.forEach(function(k){ out[k] = ''; });
+    out.synopsis = '';
+    out.platforms = [];
+    if (!v || typeof v !== 'object') return out;
+    INFO_KEYS.forEach(function(k){
+      out[k] = (typeof v[k] === 'string') ? v[k].replace(/\r\n/g, '\n').slice(0, 300) : '';
+    });
+    out.synopsis = (typeof v.synopsis === 'string') ? v.synopsis.replace(/\r\n/g, '\n').slice(0, 3000) : '';
+    out.platforms = normTags(v.platforms, 24, 12);
+    return out;
   }
   function normalize(d){
     var out = defaultDb();
@@ -1030,6 +1164,8 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       out.prefs.rankPage = (isFinite(rp) && rp >= 1) ? Math.min(rp, 9999) : 1;
       // 新增：长评论 Markdown 编辑器的视图模式（编辑 / 分屏 / 预览）
       out.prefs.mdView = ['edit','split','preview'].indexOf(d.prefs.mdView) >= 0 ? d.prefs.mdView : 'split';
+      // 新增：统计页按标签筛选（空字符串 = 全部标签）
+      out.prefs.rankTag = (typeof d.prefs.rankTag === 'string') ? d.prefs.rankTag.slice(0, 20) : '';
     }
     if (Array.isArray(d.games)) {
       out.games = d.games.filter(function(g){ return g && g.name; }).map(function(g){
@@ -1064,6 +1200,9 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
           rating: rating,
           review: review,
           reviewAt: Number(g.reviewAt) || 0,
+          // 新增：标签与作品信息。老存档没有这两个字段，给空值即可，不影响原有数据
+          tags: normTags(g.tags),
+          info: normInfo(g.info),
           manualSeconds: manual,
           completedAt: normDateStr(g.completedAt),
           totalSeconds: sum + manual,
@@ -1141,6 +1280,49 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
     db.games.forEach(function(g, i){
       g.rating = 0; g.review = ''; g.reviewAt = 0;
       if (rateDemo[i]) { g.rating = rateDemo[i].rating; g.review = rateDemo[i].review; g.reviewAt = rateDemo[i].reviewAt; }
+    });
+    // 演示：标签与作品信息（只影响 ?demo=1，不会写进真实存档）
+    var tagDemo = [
+      ['魂系', '开放世界', '高难度', '年度最佳'],
+      ['FPS', '竞技', '联机'],
+      ['种田', '休闲', '治愈'],
+      ['魂系', '动作', '国产'],
+      ['独立', '类银河恶魔城', '手绘'],
+      ['叙事', '步行模拟', '剧情向'],
+      ['魂系', '动作', '高难度']
+    ];
+    db.games.forEach(function(g, i){
+      g.tags = tagDemo[i] || [];
+      g.info = normInfo(null);
+    });
+    db.games[0].info = normInfo({
+      publisher: 'FromSoftware / 万代南梦宫',
+      developer: 'FromSoftware',
+      scenario: '宫崎英高、George R. R. Martin',
+      art: '宫崎英高',
+      background: '交界地',
+      alias: 'Elden Ring\n艾尔登法环',
+      platforms: ['PC', 'PS5', 'Xbox Series'],
+      genre: '动作角色扮演',
+      engine: 'FromEngine',
+      players: '1（联机最多 4 人）',
+      release: '2022-02-25',
+      price: 'PC ¥398\nPS5 ¥479（含税）',
+      synopsis: '碎裂的艾尔登法环散落在交界地，你作为褪色者被唤醒，去寻找碎片、成为艾尔登之王。\n开放世界不给你答案，只给你远方的一个轮廓，走过去的那段路才是奖励。'
+    });
+    db.games[4].info = normInfo({
+      publisher: 'Team Cherry',
+      developer: 'Team Cherry',
+      scenario: 'Team Cherry',
+      art: 'Ari Gibson',
+      background: '圣巢',
+      platforms: ['PC', 'Nintendo Switch', 'PS4'],
+      genre: '类银河恶魔城',
+      engine: 'Unity',
+      players: '1',
+      release: '2017-02-24',
+      price: 'PC ¥48',
+      synopsis: '手绘的地下虫之王国，慢节奏探索与硬核战斗并存。'
     });
     db.games.forEach(recomputeGame);
     db.prefs.sort = 'recent';
@@ -1326,6 +1508,42 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
   function findGame(id){
     for (var i = 0; i < db.games.length; i++) if (db.games[i].id === id) return db.games[i];
     return null;
+  }
+  /* 搜索用的可检索文本：名称、评论、标签、作品信息都算在内，
+     所以在游戏库或统计页搜「Key」「视觉小说」「honeycomb」都能命中 */
+  function searchBlob(g){
+    var parts = [g.name || '', g.review || ''];
+    if (g.tags && g.tags.length) parts = parts.concat(g.tags);
+    var info = g.info;
+    if (info) {
+      INFO_KEYS.forEach(function(k){ if (info[k]) parts.push(info[k]); });
+      if (info.platforms && info.platforms.length) parts = parts.concat(info.platforms);
+      if (info.synopsis) parts.push(info.synopsis);
+    }
+    return parts.join(' \n ').toLowerCase();
+  }
+  function matchQuery(g, q){
+    if (!q) return true;
+    return searchBlob(g).indexOf(q) >= 0;
+  }
+  // 标签筛选：忽略大小写；空字符串表示不筛
+  function hasTag(g, tag){
+    if (!tag) return true;
+    var want = tag.toLowerCase();
+    return (g.tags || []).some(function(t){ return t.toLowerCase() === want; });
+  }
+  // 所有游戏用过的标签（去重、按出现次数降序），用于统计页下拉
+  function allTags(){
+    var map = {};
+    db.games.forEach(function(g){
+      (g.tags || []).forEach(function(t){
+        var key = t.toLowerCase();
+        if (!map[key]) map[key] = { name: t, n: 0 };
+        map[key].n++;
+      });
+    });
+    return Object.keys(map).map(function(k){ return map[k]; })
+      .sort(function(a,b){ return b.n - a.n || a.name.localeCompare(b.name, 'zh-Hans-CN'); });
   }
   // 分段记录合计（不含手动记录的整体时长）
   function sessionsSum(g){
@@ -1594,10 +1812,8 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
   function renderLibrary(){
     var q = ($('#searchInput').value || '').trim().toLowerCase();
     var sort = db.prefs.sort || 'recent';
-    var list = db.games.filter(function(g){
-      if (!q) return true;
-      return g.name.toLowerCase().indexOf(q) >= 0 || (g.review || '').toLowerCase().indexOf(q) >= 0;
-    });
+    // 名称、评论、标签、作品信息都能搜到
+    var list = db.games.filter(function(g){ return matchQuery(g, q); });
     list.sort(function(a,b){
       if (sort === 'total') return (b.totalSeconds || 0) - (a.totalSeconds || 0);
       if (sort === 'name') return a.name.localeCompare(b.name, 'zh-Hans-CN');
@@ -1651,6 +1867,15 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       var reviewHtml = reviewText
         ? '<div class="gc-review" title="' + esc(reviewText) + '">' + esc(reviewText) + '</div>'
         : '';
+      // 标签：卡片上最多露 3 个，多出来的折成 +N
+      var tagHtml = (g.tags && g.tags.length)
+        ? '<div class="' + (layout === 'list' ? 'gl-tags' : 'gc-tags') + '">' +
+            g.tags.slice(0, 3).map(function(t){
+              return '<span class="t" title="' + esc(t) + '">' + esc(t) + '</span>';
+            }).join('') +
+            (g.tags.length > 3 ? '<span class="t more" title="' + esc(g.tags.join('、')) + '">+' + (g.tags.length - 3) + '</span>' : '') +
+          '</div>'
+        : '';
 
       if (layout === 'list') {
         return '<div class="gl-row" data-id="' + g.id + '">' +
@@ -1664,6 +1889,7 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
               (activeId === g.id ? '<span class="tag-chip live">' + (db.active.running ? '计时中' : '已暂停') + '</span>' : '') +
             '</div>' +
             '<div class="gl-meta">' + meta.join(' · ') + '</div>' +
+            tagHtml +
             (reviewText ? '<div class="gl-review" title="' + esc(reviewText) + '">' + esc(reviewText) + '</div>' : '') +
           '</div>' +
           '<div class="gl-time">' + fmtDur(g.totalSeconds) + '</div>' +
@@ -1684,6 +1910,7 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
           '<div class="gc-top"><div class="gc-name">' + esc(g.name) + '</div>' + scoreChip + '</div>' +
           '<div class="gc-total">' + fmtDur(g.totalSeconds) + '</div>' +
           '<div class="gc-meta">' + meta.join(' · ') + '</div>' +
+          tagHtml +
           reviewHtml +
           '<div class="gc-actions">' +
             '<button class="btn sm primary" data-act="play">继续计时</button>' +
@@ -1694,10 +1921,48 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
     }).join('');
   }
 
+  /* 统计页当前的筛选结果（搜索 + 标签 + 状态）。
+     KPI、两张图表、排行都用这一份，所以数字不会互相矛盾。
+     分页和每页条数不进这里——换页不该改变汇总数字。 */
+  function statsPool(){
+    var q = ($('#statSearch') ? $('#statSearch').value : '').trim().toLowerCase();
+    var rFilter = db.prefs.rankFilter || 'all';
+    var tag = db.prefs.rankTag || '';
+    return db.games.filter(function(g){
+      if (!matchQuery(g, q)) return false;
+      if (!hasTag(g, tag)) return false;
+      if (rFilter === 'done') return gameStatus(g) === 'done';
+      if (rFilter === 'playing') return gameStatus(g) === 'playing';
+      if (rFilter === 'todo') return gameStatus(g) === 'todo';
+      if (rFilter === 'unrated') return !g.rating;
+      if (rFilter === 'high') return g.rating >= 8;
+      return true;
+    });
+  }
+  function statHasFilter(){
+    var q = ($('#statSearch') ? $('#statSearch').value : '').trim();
+    return !!q || !!db.prefs.rankTag || (db.prefs.rankFilter || 'all') !== 'all';
+  }
+  // 标签下拉：选项随库里已有的标签走，被删掉的标签自动回落到「全部标签」
+  function syncStatTagOptions(){
+    var sel = $('#statTag');
+    if (!sel) return;
+    var tags = allTags();
+    var cur = db.prefs.rankTag || '';
+    sel.innerHTML = '<option value="">全部标签</option>' + tags.map(function(t){
+      return '<option value="' + esc(t.name) + '">' + esc(t.name) + '（' + t.n + '）</option>';
+    }).join('');
+    var exists = tags.some(function(t){ return t.name.toLowerCase() === cur.toLowerCase(); });
+    if (cur && !exists) { db.prefs.rankTag = ''; cur = ''; }
+    sel.value = cur;
+  }
+
   function renderStats(){
-    var totalSec = 0, sessionCount = 0, longest = 0, ratedCount = 0, scoreSum = 0;
+    syncStatTagOptions();
+    var pool = statsPool();
+    var totalSec = 0, longest = 0, ratedCount = 0, scoreSum = 0, todaySec = 0;
     var nDone = 0, nPlaying = 0, nTodo = 0;
-    db.games.forEach(function(g){
+    pool.forEach(function(g){
       totalSec += g.totalSeconds || 0;
       var st = gameStatus(g);
       if (st === 'done') nDone++;
@@ -1705,32 +1970,42 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       else nTodo++;
       if (g.rating) { ratedCount++; scoreSum += g.rating; }
       g.sessions.forEach(function(s){
-        sessionCount++;
         if (s.seconds > longest) longest = s.seconds;
+        if (sameDay(sessionDay(s))) todaySec += s.seconds;
       });
     });
     $('#stTotal').textContent = fmtDur(totalSec);
-    $('#stGames').textContent = String(db.games.length);
+    $('#stGames').textContent = String(pool.length);
     $('#stDone').textContent = String(nDone);
     $('#stPlaying').textContent = String(nPlaying);
     $('#stTodo').textContent = String(nTodo);
     $('#stRate').textContent = ratedCount ? (fmtScore(scoreSum / ratedCount) + ' 分') : '—';
-    $('#stRate').title = ratedCount ? ('已评分 ' + ratedCount + ' / ' + db.games.length + ' 款') : '还没有给任何游戏评分';
-    $('#stToday').textContent = fmtDur(todayStats().seconds);
+    $('#stRate').title = ratedCount ? ('已评分 ' + ratedCount + ' / ' + pool.length + ' 款') : '还没有给任何游戏评分';
+    $('#stToday').textContent = fmtDur(todaySec);
     $('#stLongest').textContent = longest ? fmtDur(longest) : '—';
-    renderRateDonut();
+    // 汇总卡右上角：一眼看出当前数字是全部还是筛选后的
+    var scopeEl = $('#stScope');
+    if (scopeEl) {
+      scopeEl.textContent = statHasFilter()
+        ? ('筛选出 ' + pool.length + ' 款 / 共 ' + db.games.length + ' 款')
+        : ('全部 ' + pool.length + ' 款游戏');
+      scopeEl.title = statHasFilter() ? '下面的数字和图表都只统计当前筛选结果' : '当前没有筛选，统计全部游戏';
+    }
+    renderRateDonut(pool);
 
-    // 7 天
+    // 7 天：也只统计筛选结果里的分段
     var days = [], i;
     for (i = 6; i >= 0; i--) {
       var d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate() - i);
       days.push({ time: d.getTime(), sec: 0, label: ['日','一','二','三','四','五','六'][d.getDay()] });
     }
-    allSessions().forEach(function(x){
-      var t = sessionDay(x.s);
-      if (!t) return;
-      var dd = new Date(t); dd.setHours(0,0,0,0);
-      for (var k = 0; k < days.length; k++) if (days[k].time === dd.getTime()) days[k].sec += x.s.seconds;
+    pool.forEach(function(g){
+      g.sessions.forEach(function(s){
+        var t = sessionDay(s);
+        if (!t) return;
+        var dd = new Date(t); dd.setHours(0,0,0,0);
+        for (var k = 0; k < days.length; k++) if (days[k].time === dd.getTime()) days[k].sec += s.seconds;
+      });
     });
     var max = 1;
     days.forEach(function(d){ if (d.sec > max) max = d.sec; });
@@ -1745,17 +2020,8 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       '</div>';
     }).join('');
 
-    // 排行：支持按分数 / 时长 / 完成日期 / 名称排序，并按评分情况筛选
+    // 排行：直接用上面的筛选结果（搜索 / 标签 / 状态已经筛过），这里只负责排序
     var rSort = db.prefs.rankSort || 'total';
-    var rFilter = db.prefs.rankFilter || 'all';
-    var pool = db.games.filter(function(g){
-      if (rFilter === 'done') return gameStatus(g) === 'done';
-      if (rFilter === 'playing') return gameStatus(g) === 'playing';
-      if (rFilter === 'todo') return gameStatus(g) === 'todo';
-      if (rFilter === 'unrated') return !g.rating;
-      if (rFilter === 'high') return g.rating >= 8;
-      return true;
-    });
     pool.sort(function(a,b){
       if (rSort === 'rating') {
         var ar = a.rating || 0, br = b.rating || 0;
@@ -1847,16 +2113,19 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
     var light = (s % 2) ? 45 : 63;
     return 'hsl(' + Math.round(hue) + ', 64%, ' + light + '%)';
   }
-  function renderRateDonut(){
+  function renderRateDonut(list){
     var host = $('#rateDonut');
     if (!host) return;
-    var total = db.games.length;
+    // 不传参数时统计全部游戏；统计页会传入筛选后的集合
+    var pool = list || db.games;
+    var total = pool.length;
     if (!total) {
-      host.innerHTML = '<div class="empty" style="padding:30px 0">还没有游戏，先去添加一款吧。</div>';
+      host.innerHTML = '<div class="empty" style="padding:30px 0">' +
+        (db.games.length ? '当前筛选下没有游戏。' : '还没有游戏，先去添加一款吧。') + '</div>';
       return;
     }
     var counts = {}, rated = 0, sum = 0;
-    db.games.forEach(function(g){
+    pool.forEach(function(g){
       if (g.rating) { counts[g.rating] = (counts[g.rating] || 0) + 1; rated++; sum += g.rating; }
     });
     var items = [];
@@ -1942,6 +2211,7 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
     }
     var g = {
       id: uid(), name: name, cover: '', rating: 0, review: '', reviewAt: 0,
+      tags: [], info: normInfo(null),
       totalSeconds: 0, manualSeconds: 0, completedAt: '',
       createdAt: Date.now(), lastPlayedAt: 0, sessions: []
     };
@@ -2010,6 +2280,182 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
   /* ---------------- 游戏详情页 ---------------- */
   var curDetailId = null;
   var reviewTimer = null;   // 长评论自动保存的防抖句柄
+  var infoEditing = false;  // 游戏信息卡是否处于编辑态
+  var infoEditFor = null;   // 编辑态对应的游戏 id，换游戏时重置
+
+  /* ---------------- 游戏信息卡（标签 / 制作信息 / 简介） ---------------- */
+  function infoValueHtml(key, g){
+    var info = g.info || normInfo(null);
+    if (key === 'platforms') {
+      var ps = info.platforms || [];
+      if (!ps.length) return '<div class="info-v dim">—</div>';
+      return '<div class="info-v">' + ps.map(function(p){
+        return '<span class="plat">' + esc(p) + '</span>';
+      }).join('') + '</div>';
+    }
+    var v = info[key] || '';
+    return '<div class="info-v' + (v ? '' : ' dim') + '">' + (v ? esc(v) : '—') + '</div>';
+  }
+
+  function tagChipsHtml(g){
+    var tags = g.tags || [];
+    var chips = tags.map(function(t){
+      return '<span class="gtag"><span class="tx" title="' + esc(t) + '">' + esc(t) + '</span>' +
+        '<button type="button" class="x" data-tag="' + esc(t) + '" title="删除标签「' + esc(t) + '」">×</button></span>';
+    }).join('');
+    return chips + '<input class="tag-input" id="tagInput" maxlength="20" autocomplete="off" ' +
+      'placeholder="＋ 添加标签，回车确认">';
+  }
+
+  function renderInfoBlock(g){
+    var host = $('#infoBlock');
+    if (!host || !g) return;
+    var info = g.info || normInfo(null);
+
+    // 换了游戏就退出编辑态，避免把上一款的内容错填进来
+    if (infoEditFor !== g.id) { infoEditing = false; infoEditFor = g.id; }
+
+    var head = '<div class="info-head">' +
+      '<b>' + (infoEditing ? '编辑游戏信息' : '游戏信息') + '</b>' +
+      '<span class="info-sub">' + (infoEditing ? '填完点「保存信息」生效' : '标签、制作阵容与简介') + '</span>' +
+      '<span class="sp"></span>' +
+      (infoEditing ? '' : '<button class="btn sm ghost" id="infoEdit">编辑信息</button>') +
+    '</div>';
+    var tagsBar = '<div class="tagbar"><span class="tagbar-k">标签</span>' + tagChipsHtml(g) + '</div>';
+
+    if (infoEditing) {
+      var fields = INFO_FIELDS.filter(function(f){ return f[0] !== 'platforms'; }).map(function(f){
+        var key = f[0], label = f[1];
+        var val = info[key] || '';
+        // 别名、售价可能有多行；别名通常较长，独占一行，售价单列即可
+        var multi = (key === 'alias' || key === 'price');
+        var full = (key === 'alias');
+        var ctl = multi
+          ? '<textarea class="input" id="if_' + key + '" maxlength="300" placeholder="' + esc(label) + '">' + esc(val) + '</textarea>'
+          : '<input class="input" id="if_' + key + '" maxlength="300" value="' + esc(val) + '" placeholder="' + esc(label) + '">';
+        return '<label class="fl' + (full ? ' full' : '') + '">' + esc(label) + ctl + '</label>';
+      }).join('');
+
+      host.innerHTML = '<div class="card info-card">' + head +
+        '<div class="info-form">' + fields +
+          '<label class="fl full">平台（多个用逗号或顿号分隔）' +
+            '<input class="input" id="if_platforms" maxlength="200" value="' +
+              esc((info.platforms || []).join('、')) + '" placeholder="PC、Nintendo Switch">' +
+          '</label>' +
+          '<label class="fl full">游戏简介' +
+            '<textarea class="input" id="if_synopsis" maxlength="3000" style="min-height:96px" ' +
+              'placeholder="这部作品讲了一个什么故事，值不值得玩…">' + esc(info.synopsis || '') + '</textarea>' +
+          '</label>' +
+        '</div>' +
+        '<div class="info-foot">' +
+          '<button class="btn sm primary" id="infoSave">保存信息</button>' +
+          '<button class="btn sm ghost" id="infoCancel">取消</button>' +
+          '<span class="tiny">标签在下面直接增删，改完立刻生效。</span>' +
+        '</div>' +
+        tagsBar +
+      '</div>';
+    } else {
+      var rows = INFO_FIELDS.map(function(f){
+        return '<div class="info-row"><div class="info-k">' + esc(f[1]) + '</div>' + infoValueHtml(f[0], g) + '</div>';
+      }).join('');
+      var syn = info.synopsis || '';
+      host.innerHTML = '<div class="card info-card">' + head +
+        '<div class="info-rows">' + rows + '</div>' +
+        '<div class="info-syn"><div class="k">游戏简介</div>' +
+          (syn ? '<div class="txt">' + esc(syn) + '</div>'
+               : '<div class="txt dim" style="color:var(--dim)">还没有写简介。点右上角「编辑信息」补上。</div>') +
+        '</div>' +
+        tagsBar +
+      '</div>';
+    }
+    bindInfoBlock(g);
+  }
+
+  function bindInfoBlock(g){
+    var editBtn = $('#infoEdit');
+    if (editBtn) editBtn.addEventListener('click', function(){
+      infoEditing = true;
+      renderInfoBlock(g);
+    });
+    var cancelBtn = $('#infoCancel');
+    if (cancelBtn) cancelBtn.addEventListener('click', function(){
+      infoEditing = false;
+      renderInfoBlock(g);
+    });
+    var saveBtn = $('#infoSave');
+    if (saveBtn) saveBtn.addEventListener('click', function(){ saveInfoForm(g); });
+
+    // 删除标签：点 × 立刻生效，不需要另存
+    $$('#infoBlock .gtag .x').forEach(function(b){
+      b.addEventListener('click', function(e){
+        e.stopPropagation();
+        removeTag(g, b.getAttribute('data-tag'));
+      });
+    });
+
+    // 新增标签：回车提交；点到别处时如果框里有字也顺手加上
+    var input = $('#tagInput');
+    if (input) {
+      input.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { e.preventDefault(); addTag(g, this.value); }
+        else if (e.key === 'Escape') { this.value = ''; this.blur(); }
+      });
+      input.addEventListener('blur', function(){
+        var v = this.value;
+        this.value = '';
+        if (v.trim()) addTag(g, v);
+      });
+    }
+  }
+
+  function addTag(g, raw){
+    var t = String(raw || '').trim().replace(/\s+/g, ' ').slice(0, 20);
+    if (!t) return false;
+    g.tags = g.tags || [];
+    if (g.tags.length >= 30) { toast('标签最多 30 个', 'err'); return false; }
+    var dup = g.tags.some(function(x){ return x.toLowerCase() === t.toLowerCase(); });
+    if (dup) { toast('已经有「' + t + '」这个标签了'); return false; }
+    g.tags.push(t);
+    var ok = save();
+    renderInfoBlock(g);
+    var ni = $('#tagInput');
+    if (ni) ni.focus();
+    if (currentPage === 'library') renderLibrary();
+    if (!ok) toast('标签加上了，但没能保存到本机', 'err');
+    return ok;
+  }
+
+  function removeTag(g, raw){
+    var t = String(raw || '');
+    g.tags = g.tags || [];
+    var before = g.tags.length;
+    g.tags = g.tags.filter(function(x){ return x.toLowerCase() !== t.toLowerCase(); });
+    if (g.tags.length === before) return;
+    // 统计页正按这个标签筛选的话，退回「全部标签」，免得筛出空列表
+    if (db.prefs.rankTag && db.prefs.rankTag.toLowerCase() === t.toLowerCase()) db.prefs.rankTag = '';
+    var ok = save();
+    renderInfoBlock(g);
+    if (currentPage === 'library') renderLibrary();
+    toast(ok ? '已删除标签「' + t + '」' : '标签删了，但没能保存到本机', ok ? undefined : 'err');
+  }
+
+  function saveInfoForm(g){
+    var info = normInfo(null);
+    INFO_KEYS.forEach(function(k){
+      var el = $('#if_' + k);
+      if (el) info[k] = el.value.replace(/\r\n/g, '\n').trim();
+    });
+    var platEl = $('#if_platforms');
+    if (platEl) info.platforms = normTags(platEl.value.split(/[,，、;；\n]+/), 24, 12);
+    var synEl = $('#if_synopsis');
+    if (synEl) info.synopsis = synEl.value.trim();
+    g.info = normInfo(info);
+    var ok = save();
+    infoEditing = false;
+    renderInfoBlock(g);
+    if (currentPage === 'library') renderLibrary();
+    toast(ok ? '游戏信息已保存' : '信息改好了，但没能保存到本机', ok ? undefined : 'err');
+  }
 
   // 从游戏库 / 详情页「继续计时」：切到计时页并选中该游戏
   function playGame(id){
@@ -2282,6 +2728,8 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
         '</div>' +
       '</div>' +
 
+      '<div id="infoBlock"></div>' +
+
       '<div class="rate-block" style="margin-top:16px">' +
         '<div class="rate-head">' +
           '<b>评分</b>' +
@@ -2366,6 +2814,7 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       '<div class="sess-list" style="max-height:none">' + sessionsHtml(g) + '</div>';
 
     bindDetail(g, baseH, baseM);
+    renderInfoBlock(g);
   }
 
   function bindDetail(g, baseH, baseM){
@@ -2898,6 +3347,11 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
             db = normalized;
             db.active = null;
             curDetailId = null;
+            // 导入的是另一份数据，旧的搜索词/标签筛选会筛出空列表，先清掉
+            if ($('#statSearch')) $('#statSearch').value = '';
+            if ($('#searchInput')) $('#searchInput').value = '';
+            db.prefs.rankTag = '';
+            db.prefs.rankPage = 1;
             save(); applyTheme(); syncLayoutSeg(); renderAll(); toast('导入完成');
           });
       } catch (e) {
@@ -2953,6 +3407,33 @@ input.input::-webkit-calendar-picker-indicator:hover{opacity:1}
       var v = Number($('#rankSize').value);
       db.prefs.rankSize = [5,8,10,20,50,0].indexOf(v) >= 0 ? v : 8;
       db.prefs.rankPage = 1;
+      save(); renderStats();
+    });
+    /* 汇总卡上的筛选：搜索（名称 / 标签 / 评论 / 作品信息）、标签、重置。
+       筛选会重置页码，但不参与 KPI 之外的分页逻辑 */
+    var statSearchEl = $('#statSearch');
+    var statSearchTimer = null;
+    if (statSearchEl) {
+      statSearchEl.addEventListener('input', function(){
+        if (statSearchTimer) clearTimeout(statSearchTimer);
+        statSearchTimer = setTimeout(function(){
+          statSearchTimer = null;
+          db.prefs.rankPage = 1;
+          renderStats();
+        }, 140);
+      });
+    }
+    $('#statTag').addEventListener('change', function(){
+      db.prefs.rankTag = this.value;
+      db.prefs.rankPage = 1;
+      save(); renderStats();
+    });
+    $('#statReset').addEventListener('click', function(){
+      if (statSearchEl) statSearchEl.value = '';
+      db.prefs.rankFilter = 'all';
+      db.prefs.rankTag = '';
+      db.prefs.rankPage = 1;
+      $('#rankFilter').value = 'all';
       save(); renderStats();
     });
     $('#rankPager').addEventListener('click', function(e){
