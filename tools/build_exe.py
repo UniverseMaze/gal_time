@@ -41,6 +41,12 @@ def main():
     cmd = [
         sys.executable, "-m", "PyInstaller",
         "--onefile",
+        # 关键：单文件模式默认把运行时解包到系统临时目录（%TEMP%\\_MEIxxxx），
+        # 在部分机器上（临时目录被安全软件/策略限制）会导致
+        # 「Could not create temporary directory!」而无法启动。
+        # 指定 "." 后改为解包到 exe 所在目录，绕开系统临时目录；
+        # 该目录本来就需要可写（profile/ 就写在这里），因此不会引入新的限制。
+        "--runtime-tmpdir", ".",
         "--noconsole",
         "--noupx",
         "--clean",

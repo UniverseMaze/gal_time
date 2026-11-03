@@ -111,6 +111,8 @@ python tools/build_exe.py
 
 产物约 7 MB：单文件、无控制台窗口、内嵌 `app.ico` 与版本信息（产品名、版权、1.00.0.0）。启动器按 `Program Files (x86)` → `Program Files` → `LocalAppData` 顺序查找 Edge，再找 Chrome，找不到会弹窗说明缺什么；`profile/` 仍指向同目录，**已有记录无需迁移**。
 
+单文件模式默认把运行库解包到 `%TEMP%\_MEIxxxx`，在临时目录被安全软件或组策略限制的机器上会直接弹「Could not create temporary directory!」、连 Python 都没跑起来。`build_exe.py` 因此固定带上 `--runtime-tmpdir .`，改为解包到**工作目录**——双击运行时工作目录就是 exe 所在文件夹（该目录本来就要可写，`profile/` 就写在这里），不再依赖系统临时目录。手动执行 PyInstaller 时请保留这个参数。
+
 排查「双击没反应」时可带日志运行，会记录解析到的 `index.html`、`profile`、浏览器路径与子进程 PID：
 
 ```bash
@@ -258,6 +260,15 @@ Get-AuthenticodeSignature .\GameTime.exe                   # NotSigned
 | 每次点「运行(R)」 | 正常使用 | 每次多一次点击 |
 
 本项目选择**不签名、保留提示**：exe 是本地构建的，源码可自行核对并重新编译，为此改动系统信任设置不值得。
+
+**双击 `GameTime.exe` 弹出「Could not create temporary directory!」怎么办？**
+
+这是 PyInstaller **单文件模式的引导程序**报的错，发生在 Python 代码运行之前：它要把内嵌的运行库解包到 `%TEMP%\_MEIxxxx`，如果这台机器的临时目录不可写（安全软件拦截、组策略重定向、临时目录被清理工具锁住等），解包就会失败，于是只剩这一个弹窗，日志里什么也不会有。
+
+当前 `GameTime.exe` 已经改用 `--runtime-tmpdir .`（见上文「打包成 exe」），把解包位置换到程序自己所在的文件夹，正常不会再触发。如果仍然遇到：
+
+- 确认 `GameTime` 文件夹不在只读位置（例如没有放进 `Program Files`），当前账户能往里写文件；
+- 或者直接双击 `启动游戏计时器.vbs`／`启动游戏计时器（备用）.bat`，功能与数据完全一致，不会解包任何东西。
 
 **数据存在哪？换用 exe 会不会丢记录？**
 
