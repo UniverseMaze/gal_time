@@ -85,16 +85,38 @@
 
 ### 启动
 
-下载本仓库，双击：
+双击 `GameTime\GameTime.exe`（推荐），或 `GameTime\启动游戏计时器.vbs`：
 
 ```
-GameTime\启动游戏计时器.vbs
+GameTime\GameTime.exe
 ```
 
 会打开一个**没有地址栏和标签页**的独立窗口（1300×900），看起来就像原生小应用。
-如果 `.vbs` 被安全软件拦截，可以改用 `启动游戏计时器（备用）.bat`。
+如果 exe 被安全软件拦截，改用 `启动游戏计时器.vbs` 或 `启动游戏计时器（备用）.bat`。
 
-启动器实际做的事：定位 Edge，以 `--app` 模式打开 `index.html`，并把 `GameTime\profile` 指定为专属用户数据目录。
+> **首次运行可能弹出「打开文件 - 安全警告：无法验证发布者」**。这是 Windows 对未签名可执行文件的常规提示，与程序安全性无关：项目没有购买代码签名证书，文件也是本地构建、不带「来自其他计算机」标记。点「运行(R)」即可；想完全不看到它就用 `.vbs` 启动。
+>
+> 该提示的成因与消除办法（自签名证书 vs 直接点运行）见 [问与答](#faq)。
+
+启动器实际做的事：定位 Edge（找不到则退到 Chrome），以 `--app` 模式打开 `index.html`，并把 `GameTime\profile` 指定为专属用户数据目录。
+
+### 打包成 exe
+
+`GameTime.exe` 由 `tools/launcher.py` 经 PyInstaller 打包，本身只是「找浏览器 + 启动」的薄壳，不含界面与数据逻辑：
+
+```bash
+pip install pyinstaller
+python tools/build_exe.py
+```
+
+产物约 7 MB：单文件、无控制台窗口、内嵌 `app.ico` 与版本信息（产品名、版权、1.00.0.0）。启动器按 `Program Files (x86)` → `Program Files` → `LocalAppData` 顺序查找 Edge，再找 Chrome，找不到会弹窗说明缺什么；`profile/` 仍指向同目录，**已有记录无需迁移**。
+
+排查「双击没反应」时可带日志运行，会记录解析到的 `index.html`、`profile`、浏览器路径与子进程 PID：
+
+```bash
+set GAMETIME_LOG=%TEMP%\gametime.log
+GameTime.exe
+```
 
 > 若系统里找不到 Edge，启动器会用默认浏览器打开 `index.html`。这种情况下窗口会带地址栏，数据也存在那个浏览器的普通存储里，**不会**进 `profile` 目录。
 
@@ -190,7 +212,10 @@ gal_time/
 │   ├── bgm_crawl.py            # 未登录也能跑的 Bangumi 抓取
 │   ├── bgm_login_crawl.py      # 带登录态抓取（被屏蔽条目靠它）
 │   ├── match_local.py          # 名称匹配 + 字段/标签映射
-│   └── manual_map.json         # 名称人工映射表
+│   ├── manual_map.json         # 名称人工映射表
+│   ├── launcher.py             # exe 启动器源码（找浏览器 + 拉起应用窗口）
+│   ├── version_info.txt        # exe 的 Windows 版本资源
+│   └── build_exe.py            # 一条命令打包成 GameTime.exe
 ├── 界面预览.png
 ├── 界面预览-列表视图.png
 ├── 界面预览-游戏详情.png
@@ -209,6 +234,34 @@ gal_time/
 - Markdown 解析器、环状图（`conic-gradient`）、柱状图都是手写实现，没有引入任何库
 - 存储为 `localStorage`，键名 `gametime.v1`，数据结构 version 3
 - **换行符**：`.gitattributes` 设置了 `* -text`，禁止 Git 做任何换行转换。启动器 `.vbs` / `.bat` 必须是 CRLF，一旦被转成 LF，Windows 脚本宿主会在续行处报 `800A0400` 直接启动失败——所以请不要去掉这条规则
+
+---
+
+## 问与答
+
+**双击 `GameTime.exe` 弹出「打开文件 - 安全警告：无法验证发布者」，是不是有病毒？**
+
+不是。这个对话框是 Windows 对**未签名可执行文件**的常规检查，与程序行为无关。判断依据：
+
+```powershell
+(Get-Item .\GameTime.exe).Attributes                      # 只有 Archive，没有「来自其他计算机」标记
+Get-AuthenticodeSignature .\GameTime.exe                   # NotSigned
+```
+
+要彻底消除它只有两条路：
+
+| 办法 | 效果 | 代价 |
+| --- | --- | --- |
+| 购买代码签名证书（OV/EV） | 显示你的发布者名称，SmartScreen 不再拦截 | 每年约 ¥1000+，个人项目不划算 |
+| 自签名证书 + 导入本机「受信任的根证书」与「受信任的发布者」 | 本机不再提示 | 改动系统证书存储，降低该机器的信任基线；换台电脑仍会提示 |
+| 直接用 `启动游戏计时器.vbs` | 完全不提示 | 没有 exe 图标，任务栏固定后无差别 |
+| 每次点「运行(R)」 | 正常使用 | 每次多一次点击 |
+
+本项目选择**不签名、保留提示**：exe 是本地构建的，源码可自行核对并重新编译，为此改动系统信任设置不值得。
+
+**数据存在哪？换用 exe 会不会丢记录？**
+
+不会。exe 与 `.vbs` 指向同一个 `GameTime\profile\`，`profile` 里是独立的浏览器用户目录，记录在 `profile\Default\Local Storage\`。换启动方式不改变数据位置。
 
 ---
 

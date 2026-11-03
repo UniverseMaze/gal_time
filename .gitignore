@@ -19,3 +19,6 @@ desktop.ini
 # Python
 __pycache__/
 *.pyc
+
+# 构建产物（本地生成，可由 tools/build_exe.py 重建）
+GameTime/GameTime.exe
