@@ -58,10 +58,26 @@ def log(msg):
 
 
 def base_dir():
-    """打包后取 exe 所在目录，开发时取脚本所在目录"""
-    if getattr(sys, "frozen", False):
-        return os.path.dirname(os.path.abspath(sys.executable))
-    return os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+    """取「程序所在目录」。
+
+    三种运行形态都要定位到 exe/脚本的所在目录：
+    - 开发时（python tools/launcher.py）：脚本在 tools/ 下，程序在上一级；
+    - PyInstaller 打包：sys.frozen 为真，exe 就在程序目录；
+    - Nuitka 打包：不设 sys.frozen/__compiled__，且 sys.executable 会指向
+      dist 目录里那个假的 python.exe、__file__ 指向编译时的源码路径，都不可靠，
+      唯一准确的是 sys.argv[0]（exe 的真实路径）。
+
+    因此优先用 sys.argv[0] 定位 exe/脚本所在目录，再按情况向上找一层。
+    """
+    argv0 = os.path.abspath(sys.argv[0] or "")
+    if argv0:
+        d = os.path.dirname(argv0)
+        # 开发时 argv0 是 tools/launcher.py，程序在上一级
+        if os.path.basename(d).lower() == "tools":
+            return os.path.dirname(d)
+        return d
+    # 兜底：Nuitka 的 sys.executable 指向 dist 里的 python.exe，仍可反推
+    return os.path.dirname(os.path.abspath(sys.executable))
 
 
 def alert(text, flags=MB_ICONERROR):

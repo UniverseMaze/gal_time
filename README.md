@@ -102,16 +102,18 @@ GameTime\GameTime.exe
 
 ### 打包成 exe
 
-`GameTime.exe` 由 `tools/launcher.py` 经 PyInstaller 打包，本身只是「找浏览器 + 启动」的薄壳，不含界面与数据逻辑：
+`GameTime.exe` 由 `tools/launcher.py` 经 **Nuitka** 编译（standalone 目录模式），本身只是「找浏览器 + 启动」的薄壳，不含界面与数据逻辑：
 
 ```bash
-pip install pyinstaller
-python tools/build_exe.py
+# 需要 Python 3.12（Nuitka 的 --mingw64 不支持 3.13+）与 Nuitka
+winget install Python.Python.3.12        # 一次性
+<python312> -m pip install nuitka        # 一次性
+python tools/build_exe.py                # 编译
 ```
 
-产物约 7 MB：单文件、无控制台窗口、内嵌 `app.ico` 与版本信息（产品名、版权、1.00.0.0）。启动器按 `Program Files (x86)` → `Program Files` → `LocalAppData` 顺序查找 Edge，再找 Chrome，找不到会弹窗说明缺什么；`profile/` 仍指向同目录，**已有记录无需迁移**。
+产物约 5 MB 的 `GameTime.exe`，外加同目录下若干 `*.pyd` / `*.dll` 运行时依赖（约 8 MB，需一起分发）。启动器按 `Program Files (x86)` → `Program Files` → `LocalAppData` 顺序查找 Edge，再找 Chrome，找不到会弹窗说明缺什么；`profile/` 仍指向同目录，**已有记录无需迁移**。
 
-单文件模式默认把运行库解包到 `%TEMP%\_MEIxxxx`，在临时目录被安全软件或组策略限制的机器上会直接弹「Could not create temporary directory!」、连 Python 都没跑起来。`build_exe.py` 因此固定带上 `--runtime-tmpdir .`，改为解包到**工作目录**——双击运行时工作目录就是 exe 所在文件夹（该目录本来就要可写，`profile/` 就写在这里），不再依赖系统临时目录。手动执行 PyInstaller 时请保留这个参数。
+> **为什么用 Nuitka 而不是 PyInstaller**：PyInstaller 的单文件 exe 启动时会先把运行库解包到 `%TEMP%\_MEIxxxx`，这一步会被火绒 HIPS、企业终端管控等安全软件拦截，导致双击报「Could not create temporary directory!」、连 Python 都没跑起来（换 `--onedir` / `--runtime-tmpdir` / 清临时目录均无效）。Nuitka 把代码真正编译成原生机器码，standalone 模式运行时**完全不解包、不建临时目录**，不会被这类拦截影响。
 
 排查「双击没反应」时可带日志运行，会记录解析到的 `index.html`、`profile`、浏览器路径与子进程 PID：
 
@@ -263,12 +265,13 @@ Get-AuthenticodeSignature .\GameTime.exe                   # NotSigned
 
 **双击 `GameTime.exe` 弹出「Could not create temporary directory!」怎么办？**
 
-这是 PyInstaller **单文件模式的引导程序**报的错，发生在 Python 代码运行之前：它要把内嵌的运行库解包到 `%TEMP%\_MEIxxxx`，如果这台机器的临时目录不可写（安全软件拦截、组策略重定向、临时目录被清理工具锁住等），解包就会失败，于是只剩这一个弹窗，日志里什么也不会有。
+这是 **PyInstaller 单文件模式**的引导程序报的错，发生在 Python 代码运行之前：它要把内嵌的运行库解包到 `%TEMP%\_MEIxxxx`，如果这台机器的临时目录不可写（安全软件如火绒 HIPS 拦截、组策略重定向、临时目录被清理工具锁住等），解包就会失败，于是只剩这一个弹窗，日志里什么也不会有。
 
-当前 `GameTime.exe` 已经改用 `--runtime-tmpdir .`（见上文「打包成 exe」），把解包位置换到程序自己所在的文件夹，正常不会再触发。如果仍然遇到：
+当前 `GameTime.exe` 已经**改用 Nuitka standalone 编译**（见上文「打包成 exe」），运行时完全不解包、不建临时目录，不会再触发这个错误。如果仍然遇到（说明用的是旧版 exe）：
 
-- 确认 `GameTime` 文件夹不在只读位置（例如没有放进 `Program Files`），当前账户能往里写文件；
-- 或者直接双击 `启动游戏计时器.vbs`／`启动游戏计时器（备用）.bat`，功能与数据完全一致，不会解包任何东西。
+- 重新用 `python tools/build_exe.py` 编译，或直接双击 `启动游戏计时器.vbs`／`启动游戏计时器（备用）.bat`，功能与数据完全一致，不会解包任何东西。
+
+> 另外注意：程序**不要放在 WorkBuddy 的沙箱工作目录**（例如 `D:\work\...`）下运行，沙箱会静默拦截从桌面双击启动的 exe。把整个 `GameTime` 目录放到普通位置（如 `D:\GameTime`）再双击即可。
 
 **数据存在哪？换用 exe 会不会丢记录？**
 

@@ -23,5 +23,10 @@ __pycache__/
 # 构建产物（本地生成，可由 tools/build_exe.py 重建）
 GameTime/GameTime.exe
 
-# 单文件 exe 运行时的解包目录（--runtime-tmpdir . 让它出现在程序目录，正常退出会自删）
+# Nuitka standalone 编译产出的运行时依赖（与 GameTime.exe 一起生成，不提交）
+GameTime/*.pyd
+GameTime/*.dll
+GameTime/python312.dll
+
+# 旧的 PyInstaller 单文件解包目录（已弃用）
 GameTime/_MEI*/
