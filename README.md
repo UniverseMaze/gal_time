@@ -127,8 +127,10 @@ GameTime.exe
 ### 数据存在哪里
 
 ```
-GameTime\profile\Default\Local Storage\
+GameTime\profile\Default\IndexedDB\
 ```
+
+（v1.00 之前用的是 `profile\Default\Local Storage\`，升级后首次启动会自动迁移到 IndexedDB 并清空旧键。）
 
 因为用的是独立 profile，浏览器里平时的「清除浏览数据」不会影响这里的记录；反过来，手动删掉 `profile` 文件夹就等于清空数据。
 
@@ -197,7 +199,7 @@ python tools/match_local.py --bgm .tmp/bgm_raw_full.json --local .tmp/local_db.j
 
 标签不是直接搬 Bangumi 标签，而是「统一品类（视觉小说 / RPG / 音乐 / 动作 / 策略模拟）+ 全库出现两次以上的主题标签」，避免人名与一次性玩梗标签污染搜索。
 
-> 写入前请先**完全关闭计时器**（它会独占 profile），并备份 `GameTime/profile/Default/Local Storage`。脚本只填 `info` 与 `tags`，计时、评分、评论、分段记录一个字节都不改。
+> 写入前请先**完全关闭计时器**（它会独占 profile），并备份 `GameTime/profile/Default/IndexedDB`。脚本只填 `info` 与 `tags`，计时、评分、评论、分段记录一个字节都不改。
 
 ---
 
@@ -236,7 +238,8 @@ gal_time/
 
 - **单文件 HTML**：`index.html` 内含全部样式与脚本，零依赖、无构建步骤、不需要 npm
 - Markdown 解析器、环状图（`conic-gradient`）、柱状图都是手写实现，没有引入任何库
-- 存储为 `localStorage`，键名 `gametime.v1`，数据结构 version 3
+- 存储为 **IndexedDB**（库名 `gametime`，键名 `gametime.v1`，数据结构 version 3），容量上限约 100 MB；旧版存在 `localStorage` 的数据会在首次启动时自动迁移并清理旧键
+- 之所以从 `localStorage` 换到 `IndexedDB`：`localStorage` 每个源只有约 5 MB 配额（实测写入 4 MB 就 `QuotaExceededError`），而封面 base64 就占了存档的 96%，几十款游戏就会写满
 - **换行符**：`.gitattributes` 设置了 `* -text`，禁止 Git 做任何换行转换。启动器 `.vbs` / `.bat` 必须是 CRLF，一旦被转成 LF，Windows 脚本宿主会在续行处报 `800A0400` 直接启动失败——所以请不要去掉这条规则
 
 ---
@@ -275,7 +278,7 @@ Get-AuthenticodeSignature .\GameTime.exe                   # NotSigned
 
 **数据存在哪？换用 exe 会不会丢记录？**
 
-不会。exe 与 `.vbs` 指向同一个 `GameTime\profile\`，`profile` 里是独立的浏览器用户目录，记录在 `profile\Default\Local Storage\`。换启动方式不改变数据位置。
+不会。exe 与 `.vbs` 指向同一个 `GameTime\profile\`，`profile` 里是独立的浏览器用户目录，记录在 `profile\Default\IndexedDB\`。换启动方式不改变数据位置。
 
 ---
 
